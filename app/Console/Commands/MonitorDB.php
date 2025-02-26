@@ -61,6 +61,9 @@ class MonitorDB extends Command
 
                 if ($db->layout != "" && !str_contains($e, "Layout is missing")) {
                     Mail::to(config('mail.to'))->send(new ServerFMDown($db, $e->getMessage()));
+
+                    $db->last_check_at = now();
+                    $db->save();
                     $this->error($e->getMessage());
                 } else {
                     $this->warn('Layout not found. Error: ' . $e->getMessage());
@@ -71,9 +74,6 @@ class MonitorDB extends Command
 
             foreach ($dbs as $db) {
                 Artisan::call("monitor:dbs", ["id" => $db->id], new StreamOutput(fopen('php://stdout', 'w+')));
-
-                $db->last_check_at = now();
-                $db->save();
             }
         }
 
