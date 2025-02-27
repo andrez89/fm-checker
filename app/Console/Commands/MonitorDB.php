@@ -9,6 +9,7 @@ use GearboxSolutions\EloquentFileMaker\Support\Facades\FM;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Symfony\Component\Console\Output\StreamOutput;
 
@@ -37,6 +38,10 @@ class MonitorDB extends Command
 
         if ($id != null) {
             $db = Database::find($id);
+            Http::globalOptions([
+                //'verify' => false,
+                'timeout' => 30,
+            ]);
 
             $conn = uniqid("fms_");
 
